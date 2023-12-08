@@ -26,7 +26,7 @@ class DeepFakeDataset(Dataset):
 
   def __init__(self, validation=False, device=None, txt_path=None, N=None):
     self.validation = validation
-    self.device = device     
+    self.device = device
     if not txt_path:
       folder = f"{'val' if validation else 'train'}"
       fake = (f'FakeManipulation-{i+1}/**/*.jpg' for i in range(5))
@@ -36,7 +36,10 @@ class DeepFakeDataset(Dataset):
       d = [(x, y) for y, t in enumerate((fake, real)) for f in t for x in f]
     else:
       with open(txt_path, 'r') as f:
-        d = [line.rstrip().split() for line in f]
+        d = []
+        for line in f:
+          x, y = line.rstrip().split()
+          d.append((x, int(y)))
     random.seed(667)
     self.data = random.sample(d, k=len(d))[:N]
 

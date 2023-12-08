@@ -7,26 +7,24 @@ from sklearn.metrics import roc_auc_score
 
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
-resnet = Network('wide_resnet101_2', device)
-resnet.load('warmup+cosine_annealing_warm_restarts_lr=0.002_e=96')
-densenet1 = Network('densenet169', device)
-densenet1.load('warmup+cosine_annealing_warm_restarts_lr=0.002_e=96')
-densenet2 = Network('densenet169', device)
-densenet2.load('warmup+cosine_annealing_warm_restarts_lr=0.002_e=72')
-
 # the format of the text file should be:
 # <filename: string> <target: 0 | 1>
 txt_path = 'INSERT THE PATH TO THE TEXT FILE'
-
 dataset = DeepFakeDataset(True, device, txt_path)
 loader = DataLoader(dataset, 1, True)
 
+resnet = Network('wide_resnet101_2', device)
+resnet.load('warmup+cosine_annealing_warm_restarts_lr=0.002_e=96')
+resnet.eval()
+densenet1 = Network('densenet169', device)
+densenet1.load('warmup+cosine_annealing_warm_restarts_lr=0.002_e=96')
+densenet1.eval()
+densenet2 = Network('densenet169', device)
+densenet2.load('warmup+cosine_annealing_warm_restarts_lr=0.002_e=72')
+densenet2.eval()
+
 conf = [0, 0], [0, 0]
 targets, preds = [], []
-
-resnet.eval()
-densenet1.eval()
-densenet2.eval()
 
 with torch.no_grad():
   for x, y in loader:
