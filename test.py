@@ -1,4 +1,5 @@
 import torch
+from argparse import ArgumentParser
 from network import Network
 from dataset import DeepFakeDataset
 from torch.utils.data import DataLoader
@@ -7,9 +8,11 @@ from sklearn.metrics import roc_auc_score
 
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
+parser = ArgumentParser()
+parser.add_argument('path')
 # the format of the text file should be:
 # <filename: string> <target: 0 | 1>
-txt_path = 'INSERT THE PATH TO THE TEXT FILE'
+txt_path = parser.parse_args().path
 dataset = DeepFakeDataset(True, device, txt_path)
 loader = DataLoader(dataset, 1, True)
 
