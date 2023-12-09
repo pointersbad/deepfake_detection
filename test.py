@@ -9,7 +9,7 @@ from sklearn.metrics import roc_auc_score
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
 parser = ArgumentParser()
-parser.add_argument('path')
+parser.add_argument('--path')
 # the format of the text file should be:
 # <filename: string> <target: 0 | 1>
 txt_path = parser.parse_args().path
