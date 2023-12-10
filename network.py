@@ -2,6 +2,7 @@ import torch
 from torch.nn import Module, Sequential, Dropout, Linear, CELU, Sigmoid, Identity
 from torchvision.models.densenet import *
 from torchvision.models.resnet import *
+from torchvision.models.efficientnet import *
 
 
 class Network(Module):
@@ -10,7 +11,10 @@ class Network(Module):
     self.name = name
     self.backbone = globals()[name](True)
     head = 'fc' if hasattr(self.backbone, 'fc') else 'classifier'
-    in_features = getattr(self.backbone, head).in_features
+    output_layer = getattr(self.backbone, head)
+    if isinstance(output_layer, Sequential):
+      output_layer = output_layer[1]
+    in_features = output_layer.in_features
     setattr(self.backbone, head, Identity())
     self.classifier = Sequential(
         Linear(in_features, 512),
